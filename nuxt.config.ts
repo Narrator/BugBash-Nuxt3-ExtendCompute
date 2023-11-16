@@ -10,7 +10,7 @@ declare module 'nitropack' {
 
 export default defineNuxtConfig({
   app: {
-    // baseURL: '/base'
+    baseURL: '/base'
   },
   nitro: {
     // preset: provider === 'aws_amplify' ? "./amplify" : undefined,
