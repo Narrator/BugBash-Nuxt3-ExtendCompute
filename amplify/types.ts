@@ -19,10 +19,9 @@ export interface AmplifyComputeConfig {
   entrypoint: string;
 }
 
-
 export type AmplifyRouteTarget =
-  | { kind: "Static"; cacheControl?: string; }
-  | { kind: "ImageOptimization", cacheControl?: string; }
+  | { kind: "Static"; cacheControl?: string }
+  | { kind: "ImageOptimization"; cacheControl?: string }
   | {
       kind: "Compute";
       /**
@@ -149,13 +148,14 @@ export interface AmplifyDeployManifest {
   framework: {
     name: string;
     version: string;
-  }
+  };
 }
 
-export interface AWSAmplifyCustomConfig {
+export interface AWSAmplifyOptions {
+  computeStaticFallback?: boolean;
   imageOptimization?: {
-    path?: string
-    cacheControl?: string
-  }
-  imageSettings?: AmplifyImageSettings
+    path?: string;
+    cacheControl?: string;
+  };
+  imageSettings?: AmplifyImageSettings;
 }

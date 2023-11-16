@@ -26,63 +26,71 @@ export default <NitroPreset>{
 async function writeAmplifyFiles(nitro: Nitro) {
   const outDir = nitro.options.output.dir
 
-
   // Generate routes
-  const routes: AmplifyRoute[] = []
+  const routes: AmplifyRoute[] = [];
 
-  let hasWildcardPublicAsset = false
+  let hasWildcardPublicAsset = false;
 
-    // @ts-expect-error
-    if (nitro.options.awsAmplify?.imageOptimization) {
+  // @ts-expect-error
+  if (nitro.options.awsAmplify?.imageOptimization) {
       // @ts-expect-error
-      const { path, cacheControl } = nitro.options.awsAmplify?.imageOptimization
-      routes.push({
-        path,
-        target: {
-          kind: "ImageOptimization",
-          cacheControl,
-        },
-      })
-    }
+    const { path, cacheControl } = nitro.options.awsAmplify?.imageOptimization;
+    routes.push({
+      path,
+      target: {
+        kind: "ImageOptimization",
+        cacheControl,
+      },
+    });
+  }
 
-
-  const computeTarget = { kind: "Compute", src: "default" } as AmplifyRouteTarget
+  const computeTarget = {
+    kind: "Compute",
+    src: "default",
+  } as AmplifyRouteTarget;
 
   for (const publicAsset of nitro.options.publicAssets) {
     if (!publicAsset.baseURL || publicAsset.baseURL === "/") {
-      hasWildcardPublicAsset = true
-      continue
+      hasWildcardPublicAsset = true;
+      continue;
     }
     routes.push({
-      path: `${publicAsset.baseURL!.replace(/\/$/, '')}/*`,
+      path: `${publicAsset.baseURL!.replace(/\/$/, "")}/*`,
       target: {
-        cacheControl: publicAsset.maxAge > 0 ? `public, max-age=${publicAsset.maxAge}, immutable` : undefined,
-        kind: "Static"
+        cacheControl:
+          publicAsset.maxAge > 0
+            ? `public, max-age=${publicAsset.maxAge}, immutable`
+            : undefined,
+        kind: "Static",
       },
-      fallback: publicAsset.fallthrough ? computeTarget : undefined
-    })
+      fallback: publicAsset.fallthrough ? computeTarget : undefined,
+    });
   }
   if (hasWildcardPublicAsset) {
     routes.push({
       path: "/*.*",
       target: {
-        kind: "Static"
+        kind: "Static",
       },
-      fallback: computeTarget
-    })
+      fallback: computeTarget,
+    });
   }
   routes.push({
-    path: '/*',
+    path: "/*",
     target: computeTarget,
-    fallback: hasWildcardPublicAsset ? {
-      kind: "Static"
-    } : undefined
-  })
+    fallback:
+      // @ts-expect-error
+      hasWildcardPublicAsset && nitro.options.awsAmplify?.computeStaticFallback
+        ? {
+            kind: "Static",
+          }
+        : undefined,
+  });
 
   // Prefix with baseURL
   for (const route of routes) {
     if (route.path !== "/*") {
-      route.path = joinURL(nitro.options.baseURL, route.path)
+      route.path = joinURL(nitro.options.baseURL, route.path);
     }
   }
 
@@ -92,15 +100,17 @@ async function writeAmplifyFiles(nitro: Nitro) {
     routes,
     // @ts-expect-error
     imageSettings: nitro.options.awsAmplify?.imageSettings || undefined,
-    computeResources: [{
-      name: 'default',
-      entrypoint: "server.js",
-      runtime: "nodejs18.x",
-    }],
+    computeResources: [
+      {
+        name: "default",
+        entrypoint: "server.js",
+        runtime: "nodejs18.x",
+      },
+    ],
     framework: {
       name: nitro.options.framework.name || "nitro",
-      version: nitro.options.framework.version || "0.0.0"
-    }
+      version: nitro.options.framework.version || "0.0.0",
+    },
   };
   await writeFile(
     resolve(outDir, "deploy-manifest.json"),
