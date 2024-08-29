@@ -1,5 +1,7 @@
 # Nuxt 3 Kitchen Sink Template
 
+WAF test 1
+
 This template is an open-source, customizable template built with Nuxt 3 and Tailwind CSS. It showcases how all Nuxt 3 features work with zero configuration on Vercel.
 
 Look at the [Nuxt 3 documentation](https://nuxt.com) to learn more.
