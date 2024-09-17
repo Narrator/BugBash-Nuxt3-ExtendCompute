@@ -12,7 +12,6 @@ Look at the [Nuxt 3 documentation](https://nuxt.com) to learn more.
 
 103523494 - YULE
 
-
 - Server-Side Rendering (SSR)
 - Server Routes
 - Teleports
