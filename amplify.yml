@@ -8,6 +8,7 @@ frontend:
         - npx --yes nypm install
     build:
       commands:
+        - node mem.js
         - pnpm run build
   artifacts:
     baseDirectory: .amplify-hosting
