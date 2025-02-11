@@ -7,7 +7,7 @@ console.log(`Free System Memory: ${(os.freemem() / (1024 * 1024 * 1024)).toFixed
 console.log("Allocating 6GB of memory...");
 
 // Allocate an array of 805,306,368 Float64 elements (~6GB)
-const arraySize = Math.floor((6 * 1024 * 1024 * 1024) / 8); 
+const arraySize = Math.floor((9 * 1024 * 1024 * 1024) / 8); 
 const memoryHog = new Float64Array(arraySize);
 
 // Fill the array to ensure memory is actually allocated
